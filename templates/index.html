@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Preview Gallery</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans p-4">
+
+    <!-- Header -->
+    <header class="text-center py-6 mb-8 bg-white shadow-md rounded-lg">
+        <h1 class="text-3xl font-extrabold text-indigo-700">Fun Video Previews</h1>
+        <p class="text-gray-600 mt-2">View 10-second clips below. Click "Get Full Video" to receive the original file via our Telegram bot.</p>
+    </header>
+
+    <!-- Video Grid -->
+    <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        
+        {% if videos %}
+            {% for video in videos %}
+            <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden border border-gray-200">
+                
+                <div class="video-container">
+                    <!-- Note: The URL must be generated correctly to serve static files from Flask -->
+                    <video controls muted loop autoplay playsinline poster="https://placehold.co/640x360/E0E7FF/4338CA?text=Loading+Preview" class="w-full h-full">
+                        <!-- video[1] is the preview_path (e.g., 'static/previews/uuid.mp4') -->
+                        <source src="{{ url_for('serve_preview', filename=video[1].split('/')[-1]) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="p-4 text-center">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-3 truncate">Video {{ loop.index }}</h2>
+                    <a href="{{ url_for('send_video', video_id=video[0]) }}" target="_blank"
+                       class="inline-block w-full py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50">
+                        Get Full Video
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-span-full text-center p-10 bg-white rounded-lg shadow-lg">
+                <p class="text-gray-500 text-xl">No videos found. Post a video to the Telegram channel to start processing!</p>
+            </div>
+        {% endif %}
+
+    </div>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7673687227224195"
+     crossorigin="anonymous"></script>
+</body>
+</html>
